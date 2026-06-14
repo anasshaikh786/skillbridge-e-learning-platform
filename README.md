@@ -2,7 +2,7 @@
 
 A full-stack ed-tech platform where students browse and purchase courses, and instructors manage content with analytics dashboards.
 
-🔗 [Live Demo](https://skillbridge-e-learning-platform-8wj.vercel.app) &nbsp;|&nbsp; 🐙 [Source Code](https://github.com/anasshaikh786/skillbridge-e-learning-platform) 🐙 [Source Code](https://github.com/anasshaikh786/skillbridge-e-learning-platform)
+🔗 [Live Demo](https://skillbridge-e-learning-platform-8wj.vercel.app) &nbsp;|&nbsp; 🐙 [Source Code](https://github.com/anasshaikh786/skillbridge-e-learning-platform) 
 
 ---
 
