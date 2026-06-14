@@ -1,16 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { toast } from "react-hot-toast"
+import { getStoredJSON } from "../utils/localStorage"
 
 const initialState = {
-  cart: localStorage.getItem("cart")
-    ? JSON.parse(localStorage.getItem("cart"))
-    : [],
-  total: localStorage.getItem("total")
-    ? JSON.parse(localStorage.getItem("total"))
-    : 0,
-  totalItems: localStorage.getItem("totalItems")
-    ? JSON.parse(localStorage.getItem("totalItems"))
-    : 0,
+  cart: getStoredJSON("cart", []),
+  total: getStoredJSON("total", 0),
+  totalItems: getStoredJSON("totalItems", 0),
 }
 
 const cartSlice = createSlice({

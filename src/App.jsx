@@ -34,6 +34,7 @@ import VerifyEmail from "./pages/VerifyEmail"
 import ViewCourse from "./pages/ViewCourse"
 import { getUserDetails } from "./services/operations/profileAPI"
 import { ACCOUNT_TYPE } from "./utils/constants"
+import { getStoredJSON } from "./utils/localStorage"
 
 function App() {
   const dispatch = useDispatch()
@@ -42,7 +43,7 @@ function App() {
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
-      const token = JSON.parse(localStorage.getItem("token"))
+      const token = getStoredJSON("token", null)
       dispatch(getUserDetails(token, navigate))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

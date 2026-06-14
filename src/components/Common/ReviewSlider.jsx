@@ -38,6 +38,9 @@ function ReviewSlider() {
   }, [])
 
   // console.log(reviews)
+  if (!reviews.length) {
+    return null
+  }
 
   return (
     <div className="text-white">
