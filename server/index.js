@@ -25,10 +25,29 @@ database.connect();
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
+
+const allowedOrigins = (process.env.CLIENT_URL || "")
+	.split(",")
+	.map((origin) => origin.trim())
+	.filter(Boolean);
+
 app.use(
 	cors({
-		origin: "*",
+		origin: (origin, callback) => {
+			if (
+				!origin ||
+				allowedOrigins.includes(origin) ||
+				/^https:\/\/skillbridge-e-learning-platform.*\.vercel\.app$/.test(origin) ||
+				/^http:\/\/localhost:\d+$/.test(origin)
+			) {
+				return callback(null, true);
+			}
+
+			return callback(new Error("Not allowed by CORS"));
+		},
 		credentials: true,
+		methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+		allowedHeaders: ["Content-Type", "Authorization"],
 	})
 );
 app.use(
