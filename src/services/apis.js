@@ -1,6 +1,15 @@
-const BASE_URL = (
-  process.env.REACT_APP_BASE_URL || "https://skillbridge-api.onrender.com/api/v1"
-).replace(/\/$/, "")
+const DEFAULT_API_URL = "https://skillbridge-api.onrender.com/api/v1"
+
+const normalizeBaseUrl = (url) => {
+  if (!url || !/^https?:\/\//i.test(url)) {
+    return DEFAULT_API_URL
+  }
+
+  const trimmedUrl = url.replace(/\/$/, "")
+  return trimmedUrl.endsWith("/api/v1") ? trimmedUrl : `${trimmedUrl}/api/v1`
+}
+
+const BASE_URL = normalizeBaseUrl(process.env.REACT_APP_BASE_URL)
 
 // AUTH ENDPOINTS
 export const endpoints = {
