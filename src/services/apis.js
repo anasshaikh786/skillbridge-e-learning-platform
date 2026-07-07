@@ -1,4 +1,5 @@
-const DEFAULT_API_URL = "https://skillbridge-api.onrender.com/api/v1"
+const DEFAULT_API_URL =
+  "https://skillbridge-e-learning-platform.onrender.com/api/v1"
 
 const normalizeBaseUrl = (url) => {
   if (!url || !/^https?:\/\//i.test(url)) {
