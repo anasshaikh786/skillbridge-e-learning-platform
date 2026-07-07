@@ -23,6 +23,9 @@ function VerifyEmail() {
 
   const handleVerifyAndSignup = (e) => {
     e.preventDefault();
+    if (otp.length !== 6) {
+      return;
+    }
     const {
       accountType,
       firstName,
@@ -82,6 +85,7 @@ function VerifyEmail() {
             />
             <button
               type="submit"
+              disabled={otp.length !== 6 || loading}
               className="w-full bg-yellow-50 py-[12px] px-[12px] rounded-[8px] mt-6 font-medium text-richblack-900"
             >
               Verify Email
@@ -94,7 +98,9 @@ function VerifyEmail() {
               </p>
             </Link>
             <button
-              className="flex items-center text-blue-100 gap-x-2"
+              type="button"
+              disabled={loading || !signupData?.email}
+              className="flex items-center text-blue-100 gap-x-2 disabled:cursor-not-allowed disabled:opacity-60"
               onClick={() => dispatch(sendOtp(signupData.email))}
             >
               <RxCountdownTimer />
