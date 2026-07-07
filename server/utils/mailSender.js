@@ -12,7 +12,10 @@ const mailSender = async (email, title, body) => {
 
   const primaryPort = Number(MAIL_PORT) || 587
   const primarySecure = MAIL_SECURE === "true"
-  const configs = [{ port: primaryPort, secure: primarySecure }]
+  const configs =
+    MAIL_HOST === "smtp.gmail.com"
+      ? [{ service: "gmail" }, { port: primaryPort, secure: primarySecure }]
+      : [{ port: primaryPort, secure: primarySecure }]
 
   if (MAIL_HOST === "smtp.gmail.com") {
     const fallback =
@@ -28,14 +31,20 @@ const mailSender = async (email, title, body) => {
     const configKey = [
       MAIL_HOST,
       MAIL_USER,
-      config.port,
+      config.service || config.port,
       config.secure,
     ].join("|")
 
     if (!transporters.has(configKey)) {
-      transporters.set(
-        configKey,
-        nodemailer.createTransport({
+      const transportConfig = config.service
+        ? {
+          service: config.service,
+          auth: {
+            user: MAIL_USER,
+            pass: MAIL_PASS,
+          },
+        }
+        : {
           host: MAIL_HOST,
           port: config.port,
           secure: config.secure,
@@ -46,8 +55,9 @@ const mailSender = async (email, title, body) => {
           connectionTimeout: 7000,
           greetingTimeout: 7000,
           socketTimeout: 10000,
-        })
-      )
+        }
+
+      transporters.set(configKey, nodemailer.createTransport(transportConfig))
     }
 
     try {
@@ -64,7 +74,7 @@ const mailSender = async (email, title, body) => {
       lastError = error
       transporters.delete(configKey)
       console.error(
-        `Email send failed with ${MAIL_HOST}:${config.port}`,
+        `Email send failed with ${config.service || `${MAIL_HOST}:${config.port}`}`,
         error.message
       )
     }
