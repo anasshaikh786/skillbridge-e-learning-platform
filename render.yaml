@@ -23,6 +23,8 @@ services:
         sync: false
       - key: FOLDER_NAME
         value: skillbridge
+      - key: CLIENT_URL
+        value: https://skillbridge-e-learning-platform-8wj.vercel.app
       - key: MAIL_HOST
         value: smtp.gmail.com
       - key: MAIL_USER
