@@ -28,17 +28,19 @@ app.use(cookieParser());
 
 const allowedOrigins = (process.env.CLIENT_URL || "")
 	.split(",")
-	.map((origin) => origin.trim())
+	.map((origin) => origin.trim().replace(/\/$/, ""))
 	.filter(Boolean);
 
 app.use(
 	cors({
 		origin: (origin, callback) => {
+			const normalizedOrigin = origin ? origin.replace(/\/$/, "") : origin;
+
 			if (
 				!origin ||
-				allowedOrigins.includes(origin) ||
-				/^https:\/\/skillbridge-e-learning-platform.*\.vercel\.app$/.test(origin) ||
-				/^http:\/\/localhost:\d+$/.test(origin)
+				allowedOrigins.includes(normalizedOrigin) ||
+				/^https:\/\/skillbridge-e-learning-platform.*\.vercel\.app$/.test(normalizedOrigin) ||
+				/^http:\/\/localhost:\d+$/.test(normalizedOrigin)
 			) {
 				return callback(null, true);
 			}
