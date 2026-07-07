@@ -119,7 +119,8 @@ exports.signup = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     // Get email and password from request body
-    const { email, password } = req.body
+    const { email: rawEmail, password } = req.body
+    const email = rawEmail?.trim().toLowerCase()
 
     // Check if email or password is missing
     if (!email || !password) {
