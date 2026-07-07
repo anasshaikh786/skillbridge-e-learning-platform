@@ -24,8 +24,12 @@ exports.resetPasswordToken = async (req, res) => {
     )
     console.log("DETAILS", updatedDetails)
 
-    // const url = `http://localhost:3000/update-password/${token}`
-    const url = `https://skillbridge-e-learning-platform.vercel.app/update-password/${token}`
+    const clientUrl =
+      (process.env.CLIENT_URL || "https://skillbridge-e-learning-platform-8wj.vercel.app")
+        .split(",")[0]
+        .trim()
+        .replace(/\/$/, "")
+    const url = `${clientUrl}/update-password/${token}`
 
     await mailSender(
       email,
