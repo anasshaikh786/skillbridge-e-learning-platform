@@ -4,6 +4,7 @@ const OTP = require("../models/OTP")
 const jwt = require("jsonwebtoken")
 const otpGenerator = require("otp-generator")
 const mailSender = require("../utils/mailSender")
+const emailTemplate = require("../mail/templates/emailVerificationTemplate")
 const { passwordUpdated } = require("../mail/templates/passwordUpdate")
 const Profile = require("../models/Profile")
 require("dotenv").config()
@@ -16,7 +17,7 @@ exports.signup = async (req, res) => {
     const {
       firstName,
       lastName,
-      email,
+      email: rawEmail,
       password,
       confirmPassword,
       accountType,
@@ -24,6 +25,8 @@ exports.signup = async (req, res) => {
       otp,
     } = req.body
     // Check if All Details are there or not
+    const email = rawEmail?.trim().toLowerCase()
+
     if (
       !firstName ||
       !lastName ||
@@ -211,7 +214,6 @@ exports.sendotp = async (req, res) => {
     })
     let result = await OTP.findOne({ otp: otp })
     console.log("Result is Generate OTP Func")
-    console.log("OTP", otp)
     console.log("Result", result)
     while (result) {
       otp = otpGenerator.generate(6, {
@@ -221,13 +223,30 @@ exports.sendotp = async (req, res) => {
       })
       result = await OTP.findOne({ otp: otp })
     }
-    const otpPayload = { email, otp }
-    const otpBody = await OTP.create(otpPayload)
-    console.log("OTP Body", otpBody)
+    await OTP.deleteMany({ email })
+    const otpBody = await OTP.create({ email, otp })
+    console.log("OTP Body", otpBody._id)
+
+    try {
+      const mailResponse = await mailSender(
+        email,
+        "Verification Email",
+        emailTemplate(otp)
+      )
+      console.log("OTP email sent successfully:", mailResponse.response)
+    } catch (mailError) {
+      await OTP.deleteOne({ _id: otpBody._id })
+      console.error("Error occurred while sending OTP email:", mailError)
+      return res.status(502).json({
+        success: false,
+        message:
+          "Could not send OTP email. Please check the mail service configuration.",
+      })
+    }
+
     res.status(200).json({
       success: true,
       message: `OTP Sent Successfully`,
-      otp,
     })
   } catch (error) {
     console.log(error.message)
