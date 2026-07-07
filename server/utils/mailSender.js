@@ -15,9 +15,20 @@ const mailSender = async (email, title, body) => {
 
   const primaryPort = Number(MAIL_PORT) || 587
   const primarySecure = MAIL_SECURE === "true"
-  const configs = [{ port: primaryPort, secure: primarySecure }]
+  const configs =
+    MAIL_HOST === "smtp.gmail.com"
+      ? [
+          { port: 465, secure: true },
+          { port: 587, secure: false },
+        ]
+      : [{ port: primaryPort, secure: primarySecure }]
 
-  if (MAIL_HOST === "smtp.gmail.com") {
+  if (
+    MAIL_HOST === "smtp.gmail.com" &&
+    !configs.some(
+      (config) => config.port === primaryPort && config.secure === primarySecure
+    )
+  ) {
     const fallback =
       primaryPort === 465
         ? { port: 587, secure: false }
@@ -47,6 +58,10 @@ const mailSender = async (email, title, body) => {
           connectionTimeout: 7000,
           greetingTimeout: 7000,
           socketTimeout: 10000,
+          family: 4,
+          tls: {
+            servername: MAIL_HOST,
+          },
         }
 
       transporters.set(configKey, nodemailer.createTransport(transportConfig))
