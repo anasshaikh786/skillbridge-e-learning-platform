@@ -241,6 +241,12 @@ exports.sendotp = async (req, res) => {
         success: false,
         message:
           "Could not send OTP email. Please check the mail service configuration.",
+        mailError: {
+          code: mailError.code,
+          command: mailError.command,
+          responseCode: mailError.responseCode,
+          response: mailError.response,
+        },
       })
     }
 
