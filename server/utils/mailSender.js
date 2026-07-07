@@ -15,10 +15,7 @@ const mailSender = async (email, title, body) => {
 
   const primaryPort = Number(MAIL_PORT) || 587
   const primarySecure = MAIL_SECURE === "true"
-  const configs =
-    MAIL_HOST === "smtp.gmail.com"
-      ? [{ service: "gmail" }, { port: primaryPort, secure: primarySecure }]
-      : [{ port: primaryPort, secure: primarySecure }]
+  const configs = [{ port: primaryPort, secure: primarySecure }]
 
   if (MAIL_HOST === "smtp.gmail.com") {
     const fallback =
@@ -39,15 +36,7 @@ const mailSender = async (email, title, body) => {
     ].join("|")
 
     if (!transporters.has(configKey)) {
-      const transportConfig = config.service
-        ? {
-          service: config.service,
-          auth: {
-            user: MAIL_USER,
-            pass: MAIL_PASS,
-          },
-        }
-        : {
+      const transportConfig = {
           host: MAIL_HOST,
           port: config.port,
           secure: config.secure,
