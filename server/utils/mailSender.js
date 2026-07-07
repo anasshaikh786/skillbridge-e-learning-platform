@@ -75,6 +75,14 @@ const mailSender = async (email, title, body) => {
         },
       }
 
+      console.log({
+        host: process.env.MAIL_HOST,
+        port: process.env.MAIL_PORT,
+        secure: process.env.MAIL_SECURE,
+        user: process.env.MAIL_USER,
+        hasPass: !!process.env.MAIL_PASS,
+      })
+
       transporters.set(configKey, nodemailer.createTransport(transportConfig))
     }
 
